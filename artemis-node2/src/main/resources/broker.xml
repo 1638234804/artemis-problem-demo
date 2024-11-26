@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<configuration xmlns="urn:activemq"
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xmlns:xi="http://www.w3.org/2001/XInclude"
+               xsi:schemaLocation="urn:activemq /schema/artemis-configuration.xsd">
+
+   <core xmlns="urn:activemq:core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="urn:activemq:core ">
+
+	  <name>embedded-artemis</name>
+
+
+      <persistence-enabled>true</persistence-enabled>
+
+
+      <!-- this could be ASYNCIO, MAPPED, NIO
+           ASYNCIO: Linux Libaio
+           MAPPED: mmap files
+           NIO: Plain Java Files
+       -->
+      <journal-type>MAPPED</journal-type>
+
+      <paging-directory>activemq-artemis/node2/data/paging</paging-directory>
+
+      <bindings-directory>activemq-artemis/node2/data/bindings</bindings-directory>
+
+      <journal-directory>activemq-artemis/node2/data/journal</journal-directory>
+
+      <large-messages-directory>activemq-artemis/node2/data/large-messages</large-messages-directory>
+
+	  <journal-datasync>true</journal-datasync>
+
+      <journal-min-files>2</journal-min-files>
+
+      <journal-pool-files>10</journal-pool-files>
+
+      <journal-device-block-size>4096</journal-device-block-size>
+
+      <journal-file-size>10M</journal-file-size>
+	  
+	  <journal-buffer-timeout>40000</journal-buffer-timeout>
+	  
+	  <journal-max-io>4096</journal-max-io>
+	  
+	   <!-- how often we are looking for how many bytes are being used on the disk in ms -->
+      <disk-scan-period>5000</disk-scan-period>
+
+      <!-- once the disk hits this limit the system will block, or close the connection in certain protocols
+           that won't support flow control. -->
+      <max-disk-usage>90</max-disk-usage>
+
+      <!-- should the broker detect dead locks and other issues -->
+      <critical-analyzer>true</critical-analyzer>
+
+      <critical-analyzer-timeout>120000</critical-analyzer-timeout>
+
+      <critical-analyzer-check-period>60000</critical-analyzer-check-period>
+
+      <critical-analyzer-policy>HALT</critical-analyzer-policy>
+
+      
+      <page-sync-timeout>1352000</page-sync-timeout>
+
+      <acceptors>
+         <acceptor name="netty">tcp://0.0.0.0:61617?protocols=AMQP,CORE</acceptor>
+      </acceptors>
+
+
+      <security-settings>
+         <security-setting match="#">
+            <permission type="createNonDurableQueue" roles="guest"/>
+            <permission type="deleteNonDurableQueue" roles="guest"/>
+            <permission type="createDurableQueue" roles="guest"/>
+            <permission type="deleteDurableQueue" roles="guest"/>
+            <permission type="createAddress" roles="guest"/>
+            <permission type="deleteAddress" roles="guest"/>
+            <permission type="consume" roles="guest"/>
+            <permission type="browse" roles="guest"/>
+            <permission type="send" roles="guest"/>
+            <!-- we need this otherwise ./artemis data imp wouldn't work -->
+            <permission type="manage" roles="guest"/>
+         </security-setting>
+      </security-settings>
+	  
+	  <address-settings>
+         <address-setting match="#">
+            <!-- default is 1.0 -->
+            <redelivery-delay-multiplier>1.5</redelivery-delay-multiplier>
+            <!-- default is 0 (no delay) -->
+            <redelivery-delay>5000</redelivery-delay>
+            <!-- default is 0.0) -->
+            <redelivery-collision-avoidance-factor>0.15</redelivery-collision-avoidance-factor>
+            <!-- default is redelivery-delay * 10 -->
+            <max-redelivery-delay>50000</max-redelivery-delay>
+            <dead-letter-address>DLA</dead-letter-address>
+            <max-delivery-attempts>3</max-delivery-attempts>
+            <auto-create-dead-letter-resources>true</auto-create-dead-letter-resources>
+            <dead-letter-queue-prefix/>
+            <dead-letter-queue-suffix>.DLQ</dead-letter-queue-suffix>
+
+            <expiry-address>expiryAddress</expiry-address>
+            <auto-create-expiry-resources>true</auto-create-expiry-resources>
+            <expiry-queue-prefix/>
+            <expiry-queue-suffix>.EXP</expiry-queue-suffix>
+         </address-setting>
+      </address-settings>
+
+      <addresses>
+         <address name="DLA">
+            <anycast>
+               <queue name="DLA" />
+            </anycast>
+         </address>
+         <address name="remotePrinectDataForward">
+            <anycast>
+               <queue name="remotePrinectDataForward"/>
+            </anycast>
+         </address>
+      </addresses>
+
+   </core>
+</configuration>

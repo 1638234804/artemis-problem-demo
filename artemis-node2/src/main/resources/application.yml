@@ -1,0 +1,25 @@
+server:
+  port: 8081
+spring:
+  mvc:
+    dispatch-options-request: true
+    hidden-method:
+      filter:
+        enabled: true
+  profiles:
+    active: dev
+    group:
+      "dev": "dev"
+  main:
+    allow-bean-definition-overriding: true
+
+amq:
+  broker:
+    password: guest
+    user: guest
+    role: guest
+management:
+  endpoints:
+    web:
+      exposure:
+        include: jolokia

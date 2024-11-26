@@ -1,0 +1,44 @@
+server:
+  port: 8080
+spring:
+  mvc:
+    dispatch-options-request: true
+    hidden-method:
+      filter:
+        enabled: true
+  profiles:
+    active: dev
+    group:
+      "dev": "dev"
+  main:
+    allow-bean-definition-overriding: true
+
+amqphub:
+  amqp10jms:
+    remote-url: 'amqp://localhost:61616'
+    username: guest
+    password: guest
+amq:
+  broker:
+    password: guest
+    user: guest
+    role: guest
+management:
+  endpoints:
+    web:
+      exposure:
+        include: jolokia
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  groups:
+    - name: subscription
+      paths-to-match: /**
+      packages-to-scan: com.artemis.**.controller
+  api:
+    openapi-yaml-enabled: true
